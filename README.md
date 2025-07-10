@@ -1,1 +1,1 @@
-pyinstaller --onefile srtmacrobyhan2.py --icon=unnamed.ico --noconsole --add-data "srt_header2.png;."
+pyinstaller srt_macrobyhan.py --onefile --noconsole --icon=unnamed.ico --add-data "srt_header2.png;." --add-data "chromedriver.exe;."
