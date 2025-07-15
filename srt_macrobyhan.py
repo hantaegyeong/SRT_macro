@@ -6,9 +6,9 @@ from PIL import Image, ImageTk
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait, Select
 from selenium.webdriver.support import expected_conditions as EC
-from webdriver_manager.chrome import ChromeDriverManager
 from datetime import datetime
 import time
 import sys
@@ -67,7 +67,21 @@ def start_booking():
     children_count = children_var.get()
     senior_count = senior_var.get()
 
-    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+    chrome_path = resource_path("chromedriver.exe")
+    options = Options()
+    options.add_argument("--disable-extensions")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    service = Service(executable_path=chrome_path)
+
+    try:
+        driver = webdriver.Chrome(service=service, options=options)
+        log("✅ ChromeDriver 실행 성공")
+    except Exception as e:
+        log(f"❌ ChromeDriver 실행 실패: {str(e)}")
+        result_label.config(text="❌ Chrome 실행 중 에러 발생")
+        return
+
     try:
         log("로그인 시도 중...")
         driver.get('https://etk.srail.kr/cmc/01/selectLoginForm.do?pageId=TK0701000000')
@@ -144,7 +158,7 @@ app.title("🚆SRT 예매 도우미")
 app.geometry("600x700")
 app.configure(bg="white")
 
-default_font = tkfont.Font(family="마금에 고딕", size=11)
+default_font = tkfont.Font(family="맑은 고딕", size=11)
 app.option_add("*Font", default_font)
 
 img = Image.open(resource_path("srt_header2.png"))
